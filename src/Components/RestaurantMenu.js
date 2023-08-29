@@ -11,15 +11,49 @@ import useResMenuData from "../Hooks/useResMenuData"; // imported custom hook us
 import useOnline from "../Hooks/useOnline"; // imported custom hook useOnline which checks user is online or not
 import UserOffline from "./UserOffline";
 import '../index.css'
+import { useEffect, useState } from "react";
+import { useToast } from "@chakra-ui/react";
 
 const RestaurantMenu = () => {
   const { resId } = useParams(); // call useParams and get value of restaurant id using object destructuring
+  const toast=useToast()
   const [restaurant, menuItems] = useResMenuData(
     swiggy_menu_api_URL,
     resId,
     RESTAURANT_TYPE_KEY,
     MENU_ITEM_TYPE_KEY
   );
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  const [cart, setCart] = useState([]);
+
+  // Function to add an item to the cart
+  const addToCart = (item) => {
+    const existingCartItem = cart.find(cartItem => cartItem.id === item.id);
+  
+    if (existingCartItem) {
+      // Item already in cart, increase its quantity
+      const updatedCart = cart.map(cartItem =>
+        cartItem.id === item.id
+          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          : cartItem
+      );
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      alert('Item quantity increased in cart.');
+    } else {
+      // Item not in cart, add it with quantity 1
+      const updatedCart = [...cart, { ...item, quantity: 1 }];
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      alert('Successfully added to cart.');
+    }
+  };
 
   const isOnline = useOnline();
   
@@ -75,12 +109,13 @@ const RestaurantMenu = () => {
                 <div className="menu-item-details">
                   <h3 className="item-title">{item?.name}</h3>
                   <p className="item-cost">
-                    {item?.price > 0
-                      ? new Intl.NumberFormat("en-IN", {
-                          style: "currency",
-                          currency: "INR",
-                        }).format(item?.price / 100)
-                      : " "}
+                   Rs. {Math.floor(item.price / 100)
+                      // ? new Intl.NumberFormat("en-IN", {
+                      //     style: "currency",
+                      //     currency: "INR",
+                      //   }).format(item?.price / 100)
+                      // : " "
+                      }.00
                   </p>
                   <p className="item-desc">{item?.description}</p>
                 </div>
@@ -92,12 +127,15 @@ const RestaurantMenu = () => {
                       alt={item?.name}
                     />
                   )}
-                  <button className="add-btn"> ADD +</button>
+                  <button className="add-btn" onClick={() => addToCart(item)}> ADD +</button>
                 </div>
               </div>
             ))}
           </div>
         </div>
+      </div>
+      <div>
+        
       </div>
     </div>
   );

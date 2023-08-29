@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { Formik } from "formik"; // import Formik from formik
 import * as Yup from "yup"; // import Yup from yup
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import '../styles/login.css'
 
 // create a schema for validation
 const schema = Yup.object().shape({
@@ -10,35 +11,43 @@ const schema = Yup.object().shape({
     .email("Invalid email format"),
   password: Yup.string()
     .required("Password is a required field")
-    .min(8, "Password must be at least 8 characters"),
+    .min(6, "Password must be at least 8 characters"),
 });
 
 const Login = () => {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const login=JSON.parse(localStorage.getItem("register")) ||[]
+  const navigate=useNavigate()
 
-  useEffect(() => {
-    if (token?.length === 100) {
-      navigate(-1);
+  const handleLogin=(values)=>{
+    if (!login) {
+      alert("No registered user found. Please register first.");
+      return;
     }
-  }, []);
+    else{
+      let isAlready=false;
+            for(let i=0; i<login.length; i++){
+                if(login[i].email==values.email && login[i].password==values.password){
+                    isAlready=true;
 
-  function handleNavigate(values) {
-    // setTimeout for navigate from login page to home page
-    setTimeout(() => {
-      // generate random String of 100 character
-      const genRandomStringNthChar = () => {
-        return [...Array(100)]
-          .map(() => Math.random().toString(36)[2])
-          .join("");
-      };
-      // store token in local storage
-      localStorage.setItem("token", genRandomStringNthChar());
-      navigate(-1);
-    }, 0);
+                    break;
+                    
+                }
+            }
+            console.log(isAlready);
+            if(isAlready==true){
+                navigate('/')
+                
+            }else if(isAlready==false){
+              alert('Wrong credentials')
+          }
+    }
+    // if (values.email === login.email && values.password === login.password) {
+    //   alert("Login successful!");
+    //   // Perform any additional actions, such as redirecting to a dashboard or home page
+    // } else {
+    //   alert("Invalid credentials. Please check your email and password.");
+    // }
   }
-
-  if(token?.length === 100) return null;
 
   return (
     <>
@@ -47,8 +56,7 @@ const Login = () => {
         validationSchema={schema}
         initialValues={{ email: "", password: "" }}
         onSubmit={(values) => {
-          // call handleNavigate and pass input filed data
-          handleNavigate(JSON.stringify(values));
+          handleLogin(values);
         }}
       >
         {({
@@ -61,7 +69,6 @@ const Login = () => {
         }) => (
           <div className="login-container">
             <div className="login-form">
-              {/* Passing handleSubmit parameter to html form onSubmit property */}
               <form noValidate onSubmit={handleSubmit}>
                 <span>Login</span>
                 {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
@@ -95,6 +102,7 @@ const Login = () => {
                 </p>
                 {/* Click on submit button to submit the form */}
                 <button type="submit">Login</button>
+                <p>New user? <Link to='/register' color="blue">Create account</Link></p>
               </form>
             </div>
           </div>

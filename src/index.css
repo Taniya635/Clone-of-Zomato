@@ -1010,6 +1010,8 @@ a {
   }
 }
 
+
+
 @media only screen and (max-width: 650px) {
   .about-container .about-right img {
     width: 300px;

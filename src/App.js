@@ -14,6 +14,7 @@ import RestaurantMenu from "./Components/RestaurantMenu";
 import Profile from "./Components/ProfileClass";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom"; // for routing our page import createBrowserRouter and RouterProvider for providing router & Outlet for children component for nested routing
 import Footer from "./Components/Footer";
+import { ChakraBaseProvider, ChakraProvider } from "@chakra-ui/react";
 
 /* My Food App structure will look like this, 
             1) Header
@@ -36,12 +37,17 @@ import Footer from "./Components/Footer";
 // AppLayout component to render: Header, Outlet(it contain children component like body, About, Restaurant Menu etc) and Footer Component
 export const AppLayout = () => {
   return (
+    
     <React.Fragment>
+      {/* <ChakraProvider> */}
       <Header />
       <Outlet />
       <Footer />
-    </React.Fragment>
+      {/* </ChakraProvider> */}
+      </React.Fragment>
   );
+    
+    
 };
 
 // call createBrowserRouter for routing different pages

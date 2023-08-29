@@ -1,5 +1,5 @@
 import { IMG_CDN_URL } from "../constants";
-import '../index.css'
+// import '../index.css'
 
 // Restaurant card component: Image, name, cuisine
 const RestaurantCard = ({

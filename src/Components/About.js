@@ -8,7 +8,7 @@ const About = () => {
     <div>
       <div className="about-profile-container">
         {/* used ternary condition to Show my profile and Hide my Profile and using nested routing */}
-        {show ? (
+        {/* {show ? (
           <>
           <Link to={"/about"}>
             <button
@@ -21,7 +21,7 @@ const About = () => {
             <Outlet />
           </>
         ) : (
-          <Link to={"profile"}>
+          <Link to={"/profile"}>
             <button
               className="about-profile-button"
               onClick={() => setShow(true)}
@@ -29,7 +29,7 @@ const About = () => {
               Show My Profile
             </button>
           </Link>
-        )}
+        )} */}
       </div>
       <div className="about-container">
         <div className="about-left">
